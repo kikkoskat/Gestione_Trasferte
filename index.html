@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b1220" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icon.svg" type="image/svg+xml" />
+  <title>Trasferte Manager</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div>
+        <span class="kicker">BUSINESS TRIP</span>
+        <h1>Trasferte Manager</h1>
+        <p id="today"></p>
+      </div>
+      <button id="quickExpense" class="top-action" aria-label="Nuova spesa">+</button>
+    </header>
+
+    <main>
+      <section id="home" class="screen active">
+        <article class="balance-card">
+          <div>
+            <span class="muted-on-dark">Saldo complessivo</span>
+            <strong id="balanceTotal">€0,00</strong>
+            <small id="balanceMeta">Nessuna trasferta registrata</small>
+          </div>
+          <div class="balance-mark">€</div>
+        </article>
+
+        <div class="kpi-grid">
+          <article class="kpi-card"><span>Da ricevere</span><strong id="refundTotal">€0,00</strong></article>
+          <article class="kpi-card"><span>Pagato da me</span><strong id="personalTotal">€0,00</strong></article>
+          <article class="kpi-card"><span>Spese totali</span><strong id="expensesTotal">€0,00</strong></article>
+          <article class="kpi-card"><span>Carta aziendale</span><strong id="companyTotal">€0,00</strong></article>
+        </div>
+
+        <div class="section-title">
+          <div><span class="kicker">RECENTI</span><h2>Le tue trasferte</h2></div>
+          <button data-go="trips" class="link-btn">Vedi tutte</button>
+        </div>
+        <div id="homeTrips" class="stack"></div>
+
+        <div class="section-title">
+          <div><span class="kicker">ANALISI</span><h2>Spese per categoria</h2></div>
+        </div>
+        <div id="categorySummary" class="category-card"></div>
+      </section>
+
+      <section id="trips" class="screen">
+        <div class="screen-head">
+          <button data-go="home" class="icon-btn">←</button>
+          <div><span class="kicker">GESTIONE</span><h2>Trasferte</h2></div>
+          <button data-open="tripModal" class="icon-btn">+</button>
+        </div>
+        <div id="tripsList" class="stack"></div>
+      </section>
+
+      <section id="expenses" class="screen">
+        <div class="screen-head">
+          <button data-go="home" class="icon-btn">←</button>
+          <div><span class="kicker">REGISTRO</span><h2>Spese</h2></div>
+          <button data-open="expenseModal" class="icon-btn">+</button>
+        </div>
+        <div class="filters">
+          <select id="filterTrip"><option value="">Tutte le trasferte</option></select>
+          <select id="filterCategory"><option value="">Tutte le categorie</option></select>
+        </div>
+        <div id="expensesList" class="stack"></div>
+      </section>
+
+      <section id="travel" class="screen">
+        <div class="screen-head">
+          <button data-go="home" class="icon-btn">←</button>
+          <div><span class="kicker">COMPENSO</span><h2>Ore viaggio</h2></div>
+          <button data-open="travelModal" class="icon-btn">+</button>
+        </div>
+        <div class="notice">Calcolo automatico delle sole ore prima delle <b>07:45</b> e dopo le <b>16:30</b>.</div>
+        <div id="travelList" class="stack"></div>
+      </section>
+
+      <section id="settings" class="screen">
+        <div class="screen-head">
+          <button data-go="home" class="icon-btn">←</button>
+          <div><span class="kicker">PREFERENZE</span><h2>Impostazioni</h2></div>
+          <span></span>
+        </div>
+        <div class="settings-card">
+          <label>Diaria giornaliera (€)<input id="defaultDaily" type="number" step="0.01" min="0" /></label>
+          <label>Forfettario pasto (€)<input id="defaultMeal" type="number" step="0.01" min="0" /></label>
+          <label>Tariffa ora viaggio (€)<input id="defaultTravelRate" type="number" step="0.01" min="0" /></label>
+          <button id="saveSettings" class="primary full">Salva impostazioni</button>
+        </div>
+        <div class="settings-card">
+          <h3>Dati e backup</h3>
+          <button id="exportBackup" class="secondary full">Esporta backup JSON</button>
+          <label class="secondary full upload">Importa backup JSON<input id="importBackup" type="file" accept=".json" hidden /></label>
+          <button id="exportTrips" class="secondary full">Esporta trasferte CSV</button>
+          <button id="exportExpenses" class="secondary full">Esporta spese CSV</button>
+        </div>
+      </section>
+    </main>
+
+    <nav class="bottom-nav">
+      <button data-go="home" class="nav-btn active"><span>⌂</span><small>Home</small></button>
+      <button data-go="trips" class="nav-btn"><span>▣</span><small>Trasferte</small></button>
+      <button data-open="expenseModal" class="fab">+</button>
+      <button data-go="expenses" class="nav-btn"><span>€</span><small>Spese</small></button>
+      <button data-go="settings" class="nav-btn"><span>⚙</span><small>Altro</small></button>
+    </nav>
+  </div>
+
+  <div id="backdrop" class="backdrop hidden"></div>
+
+  <section id="tripModal" class="sheet hidden">
+    <div class="grab"></div><div class="sheet-head"><div><span class="kicker">NUOVA</span><h2>Trasferta</h2></div><button class="close">×</button></div>
+    <form id="tripForm" class="form">
+      <label>ID Trasferta<input id="tripId" required placeholder="es. PARIGI-09-2026" /></label>
+      <label>Descrizione / Luogo<input id="tripDescription" required placeholder="es. Parigi - Cliente ABC" /></label>
+      <div class="cols"><label>Data inizio<input id="tripStart" type="date" required /></label><label>Data fine<input id="tripEnd" type="date" required /></label></div>
+      <div class="cols"><label>Diaria/giorno<input id="tripDaily" type="number" step="0.01" min="0" /></label><label>Forfait/pasto<input id="tripMeal" type="number" step="0.01" min="0" /></label></div>
+      <label>Rimborso chilometrico<select id="tripKmEnabled"><option value="no">No</option><option value="yes">Sì</option></select></label>
+      <label id="tripKmWrap" class="hidden">Rimborso km totale (€)<input id="tripKm" type="number" step="0.01" min="0" /></label>
+      <label>Tariffa ora viaggio (€)<input id="tripTravelRate" type="number" step="0.01" min="0" /></label>
+      <p id="tripMsg" class="msg"></p>
+      <button class="primary full" type="submit">Salva trasferta</button>
+    </form>
+  </section>
+
+  <section id="expenseModal" class="sheet hidden">
+    <div class="grab"></div><div class="sheet-head"><div><span class="kicker">NUOVA</span><h2>Spesa</h2></div><button class="close">×</button></div>
+    <form id="expenseForm" class="form">
+      <label>Trasferta<select id="expenseTrip" required></select></label>
+      <div class="cols"><label>Data<input id="expenseDate" type="date" required /></label><label>Categoria<select id="expenseCategory"></select></label></div>
+      <label>Importo (€)<input id="expenseAmount" type="number" step="0.01" min="0" required /></label>
+      <div class="segmented"><button type="button" class="pay active" data-pay="Mio">Carta mia</button><button type="button" class="pay" data-pay="Aziendale">Aziendale</button></div>
+      <input id="expensePayment" type="hidden" value="Mio" />
+      <label>Giustificativo<select id="expenseProof"></select></label>
+      <label>Dettagli<input id="expenseDetails" placeholder="es. Taxi aeroporto → hotel" /></label>
+      <p id="expenseMsg" class="msg"></p>
+      <button class="primary full" type="submit">Aggiungi spesa</button>
+    </form>
+  </section>
+
+  <section id="travelModal" class="sheet hidden">
+    <div class="grab"></div><div class="sheet-head"><div><span class="kicker">NUOVE</span><h2>Ore viaggio</h2></div><button class="close">×</button></div>
+    <form id="travelForm" class="form">
+      <label>Trasferta<select id="travelTrip" required></select></label>
+      <label>Data<input id="travelDate" type="date" required /></label>
+      <div class="cols"><label>Partenza<input id="travelStart" type="time" required /></label><label>Arrivo<input id="travelEnd" type="time" required /></label></div>
+      <label>Note<input id="travelNotes" placeholder="es. Casa → aeroporto" /></label>
+      <p id="travelMsg" class="msg"></p>
+      <button class="primary full" type="submit">Salva ore viaggio</button>
+    </form>
+  </section>
+
+  <script src="app.js"></script>
+</body>
+</html>
