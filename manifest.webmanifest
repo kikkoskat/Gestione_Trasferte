@@ -1,0 +1,12 @@
+{
+  "name":"Trasferte Manager",
+  "short_name":"Trasferte",
+  "description":"Gestione trasferte, spese, rimborsi, diaria e ore viaggio.",
+  "start_url":"./index.html",
+  "scope":"./",
+  "display":"standalone",
+  "background_color":"#f3f6fb",
+  "theme_color":"#0b1220",
+  "orientation":"portrait-primary",
+  "icons":[{"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]
+}
