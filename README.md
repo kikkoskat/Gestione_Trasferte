@@ -1,13 +1,29 @@
-# Trasferte Manager
+# Gestione Trasferte
 
-PWA mobile-first per gestire trasferte, spese, rimborsi, diaria, pasti, rimborso chilometrico e ore viaggio.
+Progressive Web App mobile-first che replica il file Excel `Dashboard_Gestione_Trasferte_v3.xlsx`.
 
-## Logica principale
-- Saldo economico = diaria + forfait pasti + rimborso km + compenso ore viaggio − pasti effettivi
-- Rimborso da ricevere = Trasporti + Spese Hotel + Altro pagati con metodo **Mio**
-- Le ore viaggio conteggiate sono solo quelle prima delle 07:45 e dopo le 16:30
+## Sezioni replicate
 
-## Uso
-Pubblicare i file su GitHub Pages o altro hosting HTTPS. Su Android, aprire il link in Chrome e scegliere **Installa app** / **Aggiungi a schermata Home**.
+- **Riepilogo**: totale trasferte, richieste scadute, richieste entro 7 giorni, trasferte da chiudere, legenda alert e tabella delle prime 25 trasferte.
+- **Calendario visuale**: selezione di mese e anno, giorni numerici, trasferte evidenziate con gli stessi cinque stati colore del foglio.
+- **Trasferte**: tutti i campi pre-partenza e post-trasferta del workbook, ricerca, filtri, modifica ed eliminazione.
+- **Liste**: valori ammessi per i menu, backup JSON, importazione e riepilogo CSV.
 
-I dati sono salvati nel browser tramite localStorage. Usare periodicamente **Esporta backup JSON**.
+## Calcoli automatici
+
+- Scadenza richiesta: 14 giorni prima della partenza.
+- Alert: `SCADUTA`, `ENTRO 7 GG`, `DA PROGRAMMARE` oppure `OK`.
+- Percentuale di chiusura: sette controlli documentali, come nel foglio Excel.
+- Stato complessivo: `PROGRAMMATA`, `RICHIESTA DA COMPLETARE`, `IN CORSO`, `DA CHIUDERE`, `CHIUSA` oppure `ANNULLATA`.
+
+## Dati e installazione
+
+I dati sono salvati nel `localStorage` del browser: ogni dispositivo conserva un archivio indipendente. La sezione Liste permette di esportare e importare un backup JSON.
+
+Al primo avvio vengono mostrati cinque record dimostrativi anonimi, sostituibili o eliminabili direttamente dall'app.
+
+L'app è installabile da Chrome su Android tramite **Aggiungi a schermata Home** e funziona offline dopo il primo caricamento.
+
+## Pubblicazione
+
+Il workflow in `.github/workflows/deploy-pages.yml` pubblica automaticamente il branch `main` su GitHub Pages.
